@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 #
 
-import boto3, botocore
+import boto3, botocore, os
 
 ## Set the values below if using Lambda Scheduled Event as an Event Source, otherwise leave empty and send data through the Lambda event payload
 S3BCUKET=''
@@ -32,6 +32,13 @@ def lambda_handler(event, context):
 		logNamePrefix = event['LogNamePrefix']
 		lastRecievedFile = S3BucketPrefix + event['lastRecievedFile']
 		region = event['Region']
+	elif {'BucketName','S3BucketPrefix','RDSInstanceName','LogNamePrefix','lastRecievedFile','Region'}.issubset(os.environ.keys()):
+		S3BucketName = os.environ['BucketName']	
+		S3BucketPrefix = os.environ['S3BucketPrefix']
+		RDSInstanceName = os.environ['RDSInstanceName']
+		logNamePrefix = os.environ['LogNamePrefix']
+		lastRecievedFile = S3BucketPrefix + os.environ['lastRecievedFile']
+		region = os.environ['Region']
 	else:
 		S3BucketName = S3BCUKET
 		S3BucketPrefix = S3PREFIX
