@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 #
 
-import boto3, botocore, os
+import boto3, botocore, os, time
 
 ## Set the values below if using Lambda Scheduled Event as an Event Source, otherwise leave empty and send data through the Lambda event payload
 S3BCUKET=''
@@ -84,7 +84,7 @@ def lambda_handler(event, context):
 				logFileData += logFile['LogFileData']
 			byteData = str.encode(logFileData)
 			try:
-				objectName = S3BucketPrefix + dbLog['LogFileName']
+				objectName = S3BucketPrefix + dbLog['LogFileName'] + '.' + time.strftime("%Y-%m-%d")
 				S3response = S3client.put_object(Bucket=S3BucketName, Key=objectName,Body=byteData)
 			except botocore.exceptions.ClientError as e:
 				return "Error writting object to S3 bucket, S3 ClientError: " + e.response['Error']['Message']
